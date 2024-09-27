@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Projects Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <!-- <link rel = 'stylesheet' href="styles.css"> -->
+    <style>
+        body {
+            background-color: #00205B;
+            font-family: "DM Sans", sans-serif;
+            margin: 0; /* Remove default margin */
+            height: 100vh;
+        }
+        .navbar {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 107, 166, 0.8);
+            padding: 10px 20px;
+            z-index: 1000;
+            transition: background-color 0.3s;
+            font-weight: 700;
+            height: auto;
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            /* max-width: 1200px; */
+        }
+
+        .navbar-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+        }
+
+        .navbar-menu li {
+            margin: 0 15px;
+            color: #000;
+        }
+
+        .navbar-menu li a {
+            font-size: 1rem;
+            color: #fff;
+            transition: color 0.3s;
+        }
+
+        .navbar-menu li a:hover {
+            color: #FFD700;
+        }
+
+        .navbar-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #F2E9DB;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                right: 20px;
+                background-color: #00205B;
+                width: 200px;
+                border-radius: 5px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            }
+
+            .navbar-menu.active {
+                display: flex;
+            }
+
+            .navbar-menu li {
+                margin: 10px 0;
+            }
+
+            .navbar-toggle {
+                display: block;
+            }
+        }
+        .dashboard {
+            margin-top: 70px; 
+            display: flex;
+            flex-direction: row; /* Align content in a row for dashboard */
+        }
+        .tabs {
+            background: #B9D9EB;
+            position: fixed;
+            /* top: 70px; */
+            left: 0;
+            height: 100%;
+            width: auto;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 20px; /* Add padding to avoid overlap with footer */
+        }
+        .tabs ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .tabs li {
+            padding: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .tabs li:hover{
+            color: #fff;
+        }
+
+        .tabs li.active {
+            background-color: #00205B;
+            color: #fff;
+        }
+        .tab-content {
+            flex: 1;
+            background: #00205B;
+            width: 80%;
+            padding: 20px;
+            margin-left: 5rem; /* Space for tabs */
+            overflow-y: auto;
+            /* align-items: center; */
+        }
+        .summary {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            align-items: center;
+            margin-bottom: 20px;
+            width: auto;
+
+        }
+        .summary-card {
+            background: #B9D9EB;
+            border-radius: 0.3rem;
+            padding: 20px;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            margin: 2rem;
+            /* width: 10%; */
+        }
+
+        .summary-card:hover{
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s;
+            border: #000 solid 0.1rem;
+            border-radius: 1rem;
+        }
+
+        .summary-card p {
+            font-size: 2rem;
+            font-weight: bold;
+            transition: all 0.5s ease;
+        }
+        .project-card {
+            background: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            margin-left: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .project-card:hover{
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s;
+            border: #000 solid 0.1rem;
+            border-radius: 1rem;
+            
+        }
+        .project-info {
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .project-title{
+            font-size: 1.5rem;
+            
+        }
+
+        .project-type {
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            font-size: 3rem;
+            margin: 0;
+            color: #fff;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        
+        .In-Progress {
+            font-size: 1rem;
+            color: red;
+            font-weight: 800;
+        }
+        .Completed{
+            font-size: 1rem;
+            color: green;
+            font-weight: 800;
+        }
+        .chart-container {
+            width: 400px;
+        }
+        .chart {
+            max-width: 100%;
+            max-height: 400px;
+        }
+
+        .more-details{
+            display: flex;
+            align-items: center;
+        }
+        .highlights{
+            flex: 2;
+        }
+        .members{
+            flex: 2;
+        }
+
+        .links i{
+            font-size: 1.8rem;
+            margin-right: 2rem;
+            margin-left: 3rem;
+            margin-bottom: 1rem;
+            margin-top: 1rem;
+            color: black;
+        }
+
+        .link:hover{
+            color: C8102E;
+        }
+
+        a{
+            text-decoration: none;
+        }
+
+        .description{
+            width: 70%;
+        }
+
+        @media (max-width: 600px) {
+            .summary {
+                flex-direction: column;
+            }
+            .summary-card {
+                margin: 10px 0;
+            }
+            .project-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .chart-container {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .dashboard {
+                flex-direction: column; /* Stack vertically on smaller screens */
+            }
+
+            .tabs {
+                position: static; /* Make tabs static on small screens */
+                height: auto; /* Reset height */
+                margin-bottom: 20px; /* Space below tabs */
+            }
+
+            .tab-content {
+                margin-left: 0; /* Reset margin */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tabs">
+        <nav class="navbar">
+            <div class="navbar-container">
+                <!-- <a href="#" class="navbar-logo"><img src="logo.png" alt="Logo" /></a> -->
+                <ul class="navbar-menu">
+                    <li><a href="index.html" class="hover-please">Home</a></li>
+                    <li><a href="projects.html" class="hover-please">Projects</a></li>
+                    <li><a href="people.html" class="hover-please">Our Team</a></li>
+                    <li><a href="#footer" class="hover-please">Contact Us</a></li>
+                </ul>
+                <div class="navbar-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </nav>
+        <div class="tab">
+            <ul>
+                <li class="tablinks active" onclick="openTab(event, 'service')"><i class="fa fa-desktop"></i></li>
+                <li class="tablinks" onclick="openTab(event, 'teaching')"><i class="fas fa-chalkboard-teacher"></i></li>
+                <li class="tablinks" onclick="openTab(event, 'ds')"><i class="fas fa-database"></i></li>
+                <li class="tablinks" onclick="openTab(event, 'collection')"><i class="fas fa-folder-open"></i></li>
+                <li class="tablinks" onclick="openTab(event, 'dv')"><i class="fas fa-chart-bar"></i></li>
+            </ul>
+        </div>
+    </div>
+    <div class="dashboard">
+        <div class="tab-content" id="tab-content">
+            <div id="service-content" class="content-section"></div>
+            <div id="teaching-content" class="content-section" style="display:none;"></div>
+            <div id="ds-content" class="content-section" style="display:none;"></div>
+            <div id="collection-content" class="content-section" style="display:none;"></div>
+            <div id="dv-content" class="content-section" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const data = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        const projectsData = {
+            service: [
+                { type: 'Data Services', title: "Service Project 1", status: "In-Progress", description: data, chartId: "service-chart-1", chartType: "line", members : ['Person 1', 'Person 2'], highlights :  ['highlight1', 'highlight 2'] },
+                { type: 'Data Services',title: "Service Project 2", status: "Completed", description: data, chartId: "service-chart-2", chartType: "bar", members : ['Person 1', 'Person 2'], highlights : ['highlight1', 'highlight 2'] },
+                { type: 'Data Services', title: "Service Project 3", status: "In-Progress", description: data, chartId: "service-chart-3", chartType: "pie", members : ['Person 1', 'Person 2'], highlights :  ['highlight1', 'highlight 2'] }
+            ],
+            teaching: [
+                { type: 'Education', title: "Teaching Project 1", status: "Completed", description: data, chartId: "teaching-chart-1", chartType: "bar", members : ['Person 1', 'Person 2'], highlights : ['highlight1', 'highlight 2']},
+                {type: 'Education', title: "Teaching Project 2", status: "In-Progress", description: data, chartId: "teaching-chart-2", chartType: "line", members : ['Person 1', 'Person 2'], highlights :  ['highlight1', 'highlight 2']},
+                { type: 'Education',title: "Teaching Project 3", status: "Pending", description: data, chartId: "teaching-chart-3", chartType: "pie", members : ['Person 1', 'Person 2'], highlights :  ['highlight1', 'highlight 2'] }
+            ],
+            ds: [
+                { type: 'Data Science', title: "Data Science Project 1", status: "In-Progress", description: data, chartId: "ds-chart-1", chartType: "bar", members : ['Person 1', 'Person 2'], highlights :  ['highlight1', 'highlight 2'] },
+                { type: 'Data Science', title: "Data Science Project 2", status: "Completed", description: data, chartId: "ds-chart-2", chartType: "line", members : ['Person 1', 'Person 2'], highlights :  ['highlight1', 'highlight 2'] },
+                { type: 'Data Science', title: "Data Science Project 3", status: "In-Progress", description: data, chartId: "ds-chart-3", chartType: "pie", members : ['Person 1', 'Person 2'], highlights :  ['highlight1', 'highlight 2'] }
+            ],
+            collection: [
+                { type: 'Collections', title: "Collection Project 1", status: "In-Progress", description: data, chartId: "collection-chart-1", chartType: "line", members : ['Person 1', 'Person 2'], highlights : ['highlight1', 'highlight 2'] },
+                { type: 'Collections', title: "Collection Project 2", status: "Completed", description: data, chartId: "collection-chart-2", chartType: "bar", members : ['Person 1', 'Person 2'], highlights :  ['highlight1', 'highlight 2'] },
+                { type: 'Collections', title: "Collection Project 3", status: "In-Progress", description: data, chartId: "collection-chart-3", chartType: "pie", members : ['Person 1', 'Person 2'], highlights :  ['highlight1', 'highlight 2'] }
+            ],
+            dv: [
+                { type: 'Data Visualisation', title: "Visualisation Project 1", status: "In-Progress", description: data, chartId: "visualisation-chart-1", chartType: "bar", members : ['Person 1', 'Person 2'], highlights : ['highlight1', 'highlight 2'] },
+                { type: 'Data Visualisation', title: "Visualisation Project 2", status: "Completed", description: data, chartId: "visualisation-chart-2", chartType: "line", members : ['Person 1', 'Person 2'], highlights :  ['highlight1', 'highlight 2'] },
+                { type: 'Data Visualisation', title: "Visualisation Project 3", status: "In-Progress", description: data, chartId: "visualisation-chart-3", chartType: "pie", members : ['Person 1', 'Person 2'], highlights : ['highlight1', 'highlight 2'] }
+            ]
+        };
+
+        const renderProjects = (tab) => {
+            const contentDiv = document.getElementById(`${tab}-content`);
+            contentDiv.innerHTML = ""; // Clear previous content
+
+            const projects = projectsData[tab];
+            const summary = `
+                <div class="summary">
+                    <div class="summary-card">
+                        <h3>Total Projects</h3>
+                        <p id="${tab}-total-projects">${projects.length}</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Completed</h3>
+                        <p id="${tab}-completed-projects">${projects.filter(p => p.status === "Completed").length}</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>In-Progress</h3>
+                        <p id="${tab}-in-progress-projects">${projects.filter(p => p.status === "In-Progress").length}</p>
+                    </div>
+                </div>
+            `;
+            contentDiv.innerHTML += summary;
+
+            let currentType = '';
+            projects.forEach(project => {
+                // Only display the project type if it has changed
+                if (project.type !== currentType) {
+                    contentDiv.innerHTML += `<h1 class='project-type'>${project.type}</h1>`;
+                    currentType = project.type;
+                }
+
+                const projectCard = `
+                    <div class="project-card">
+                        <div class="project-info">
+                            <h4 class="project-title">${project.title}</h4>
+                            <p class=${project.status}>${project.status}</p>
+                            <p class='description'>${project.description}</p>
+                            <span class='links'>
+                                <a href="https://github.com/your-github-id" target="_blank" class = 'link'><i class="fab fa-github"></i></a>
+                                <a href="https://scholar.google.com/citations?user=your-google-scholar-id" target="_blank" class = 'link'><i class="fas fa-graduation-cap"></i></a>
+                            </span>
+                            <div class='more-details'>
+                                <div class='members'>
+                                    <ul style="list-style-type: none; padding: 0; margin: 0;">
+                                        ${project.members.map(member => `<li style = 'margin-bottom: 1rem'><i class="fas fa-user"></i> ${member}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <div class='highlights'>
+                                    <ul >
+                                        ${project.highlights.map(highlight => `<li style = 'margin-bottom: 1rem'>${highlight}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="${project.chartId}" class="chart"></canvas>
+                        </div>
+                    </div>
+                `;
+                contentDiv.innerHTML += projectCard;
+            });
+
+            // Create charts for each project after rendering them
+            projects.forEach(project => createChart(project.chartId, project.chartType));
+        };
+
+        function openTab(evt, tabName) {
+            const tabContent = document.querySelectorAll('.content-section');
+            tabContent.forEach(content => {
+                content.style.display = 'none'; // Hide all content
+            });
+
+            const tablinks = document.querySelectorAll('.tablinks');
+            tablinks.forEach(tab => {
+                tab.classList.remove('active'); // Remove active class from all tabs
+            });
+
+            document.getElementById(`${tabName}-content`).style.display = 'block'; // Show selected tab content
+            evt.currentTarget.classList.add('active'); // Add active class to the clicked tab
+
+            // Render projects for the selected tab
+            renderProjects(tabName);
+            animateCounter(document.getElementById(`${tabName}-total-projects`), 0, projectsData[tabName].length, 1000);
+            animateCounter(document.getElementById(`${tabName}-completed-projects`), 0, projectsData[tabName].filter(p => p.status === "Completed").length, 1000);
+            animateCounter(document.getElementById(`${tabName}-in-progress-projects`), 0, projectsData[tabName].filter(p => p.status === "In-Progress").length, 1000);
+        }
+
+
+        const createChart = (chartId, type) => {
+            const ctx = document.getElementById(chartId).getContext('2d');
+            const data = {
+                labels: ['January', 'February', 'March', 'April', 'May'],
+                datasets: [{
+                    label: 'Project Statistics',
+                    data: [Math.floor(Math.random() * 100), Math.floor(Math.random() * 100), Math.floor(Math.random() * 100), Math.floor(Math.random() * 100), Math.floor(Math.random() * 100)],
+                    backgroundColor: type === 'pie' ? 'rgba(200, 16, 46, 0.5)' : 'rgba(200, 16, 46, 0.2)',
+                    borderColor: 'rgba(200, 16, 46, 1)',
+                    borderWidth: 1
+                }]
+            };
+            const options = {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            };
+            new Chart(ctx, { type, data, options });
+        };
+
+        const animateCounter = (element, start, end, duration) => {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = timestamp - startTimestamp;
+                const count = Math.min(Math.floor(progress / (duration / end) * end), end);
+                element.textContent = count;
+                element.style.fontWeight = count === end ? 'bold' : 'normal';
+                if (progress < duration) requestAnimationFrame(step);
+            };
+            requestAnimationFrame(step);
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Create a mock event object to simulate a click on the service tab
+            const event = {
+                currentTarget: document.querySelector('.tablinks.active')
+            };
+            openTab(event, 'service'); // Initialize the active tab
+        });
+
+
+    </script>
+</body>
+</html>
